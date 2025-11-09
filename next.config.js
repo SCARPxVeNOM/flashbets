@@ -11,15 +11,10 @@ const nextConfig = {
       tls: false,
     };
 
-    // Ignore optional React Native dependencies
+    // Ignore optional React Native and pino-pretty dependencies
     config.resolve.alias = {
       ...config.resolve.alias,
       '@react-native-async-storage/async-storage': false,
-    };
-
-    // Ignore optional pino-pretty dependency
-    config.resolve.alias = {
-      ...config.resolve.alias,
       'pino-pretty': false,
     };
 
