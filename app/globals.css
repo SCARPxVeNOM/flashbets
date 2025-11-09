@@ -1,0 +1,147 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #0a0a0a;
+  --foreground: #ffffff;
+  --yellow: #FFD700;
+  --cyan: #00FFFF;
+  --dark-bg: #1a1a1a;
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Grid Background Pattern */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    linear-gradient(rgba(0, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 50px 50px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Neobrutalism Utility Classes */
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .neobrutal-border {
+    border: 4px solid;
+    box-shadow: 8px 8px 0px 0px;
+  }
+
+  .neobrutal-border-yellow {
+    border-color: var(--yellow);
+    box-shadow: 8px 8px 0px 0px var(--yellow);
+  }
+
+  .neobrutal-border-cyan {
+    border-color: var(--cyan);
+    box-shadow: 8px 8px 0px 0px var(--cyan);
+  }
+
+  .neobrutal-border-white {
+    border-color: white;
+    box-shadow: 8px 8px 0px 0px white;
+  }
+
+  .neobrutal-button-yellow {
+    background: var(--yellow);
+    color: #000;
+    border: 4px solid #000;
+    box-shadow: 6px 6px 0px 0px #000;
+    font-weight: 700;
+    text-transform: uppercase;
+    transition: all 0.1s ease;
+  }
+
+  .neobrutal-button-yellow:hover {
+    transform: translate(2px, 2px);
+    box-shadow: 4px 4px 0px 0px #000;
+  }
+
+  .neobrutal-button-yellow:active {
+    transform: translate(4px, 4px);
+    box-shadow: 2px 2px 0px 0px #000;
+  }
+
+  .neobrutal-button-cyan {
+    background: transparent;
+    color: white;
+    border: 4px solid var(--cyan);
+    box-shadow: 6px 6px 0px 0px var(--cyan);
+    font-weight: 700;
+    text-transform: uppercase;
+    transition: all 0.1s ease;
+  }
+
+  .neobrutal-button-cyan:hover {
+    transform: translate(2px, 2px);
+    box-shadow: 4px 4px 0px 0px var(--cyan);
+  }
+
+  .neobrutal-button-cyan:active {
+    transform: translate(4px, 4px);
+    box-shadow: 2px 2px 0px 0px var(--cyan);
+  }
+
+  .neobrutal-card {
+    background: var(--dark-bg);
+    border: 4px solid white;
+    box-shadow: 8px 8px 0px 0px white;
+  }
+
+  .neobrutal-card-yellow {
+    background: var(--dark-bg);
+    border: 4px solid var(--yellow);
+    box-shadow: 8px 8px 0px 0px var(--yellow);
+  }
+
+  .neobrutal-card-cyan {
+    background: var(--dark-bg);
+    border: 4px solid var(--cyan);
+    box-shadow: 8px 8px 0px 0px var(--cyan);
+  }
+
+  .neobrutal-input {
+    background: var(--dark-bg);
+    border: 4px solid white;
+    color: white;
+    font-weight: 600;
+  }
+
+  .neobrutal-input:focus {
+    outline: none;
+    border-color: var(--cyan);
+    box-shadow: 0 0 0 2px var(--cyan);
+  }
+
+  .neobrutal-select {
+    background: var(--dark-bg);
+    border: 4px solid white;
+    color: white;
+    font-weight: 600;
+  }
+
+  .neobrutal-select:focus {
+    outline: none;
+    border-color: var(--cyan);
+    box-shadow: 0 0 0 2px var(--cyan);
+  }
+}
+
