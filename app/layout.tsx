@@ -6,7 +6,7 @@ import { Providers } from "./providers";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "SideShift Trader - Cross-Chain Swap Interface",
+  title: "FlashTrades - Cross-Chain Swap Interface",
   description: "Global trading interface with precise price tracking using SideShift.ai",
 };
 

@@ -54,7 +54,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <div className="flex items-center gap-4">
             <div className="text-2xl md:text-3xl font-black text-white">
-              SIDESHIFT <span className="text-[#FFD700]">TRADER</span>
+              <span className="text-[#FFD700]">FLASH</span>TRADES
             </div>
           </div>
           <div className="flex items-center gap-4">

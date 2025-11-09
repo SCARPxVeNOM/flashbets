@@ -1,8 +1,8 @@
-# SideShift Trader
+# FlashTrades
 
 <div align="center">
 
-![SideShift Trader](https://img.shields.io/badge/SideShift-Trader-00FFFF?style=for-the-badge&logo=ethereum&logoColor=white)
+![FlashTrades](https://img.shields.io/badge/FlashTrades-00FFFF?style=for-the-badge&logo=ethereum&logoColor=white)
 ![Next.js](https://img.shields.io/badge/Next.js-14-black?style=for-the-badge&logo=next.js)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.5-blue?style=for-the-badge&logo=typescript)
 ![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
@@ -30,7 +30,7 @@
 
 ## 🎯 Demo
 
-![SideShift Trader Interface](https://via.placeholder.com/800x400/0a0a0a/00FFFF?text=SideShift+Trader+Interface)
+![FlashTrades Interface](https://via.placeholder.com/800x400/0a0a0a/00FFFF?text=FlashTrades+Interface)
 
 ## 🛠️ Installation
 
@@ -125,7 +125,7 @@
 ## 📁 Project Structure
 
 ```
-sideshift-trader/
+flash-trades/
 ├── app/
 │   ├── layout.tsx          # Root layout with providers
 │   ├── page.tsx            # Main landing page
