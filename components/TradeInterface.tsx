@@ -1,11 +1,12 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useAccount } from 'wagmi';
+import { useAccount, useChainId } from 'wagmi';
 import { useTradeStore } from '@/store/trade-store';
 import { sideShiftClient } from '@/lib/sideshift';
 import { priceTracker } from '@/lib/price-tracker';
-import { ArrowRightLeft, Loader2, Zap, Info, Clock, Shield } from 'lucide-react';
+import { isTestnetChain, isTestnetNetwork } from '@/lib/chain-utils';
+import { ArrowRightLeft, Loader2, Zap, Info, Clock, Shield, AlertTriangle } from 'lucide-react';
 
 export function TradeInterface({ userAddress }: { userAddress: string }) {
   const {
@@ -30,14 +31,22 @@ export function TradeInterface({ userAddress }: { userAddress: string }) {
   } = useTradeStore();
 
   const { address } = useAccount();
+  const chainId = useChainId();
+  const isChainTestnet = isTestnetChain(chainId);
   const [shiftType, setShiftType] = useState<'fixed' | 'variable'>('variable');
   const [currentRate, setCurrentRate] = useState<string>('');
   const [minAmount, setMinAmount] = useState<string>('');
   const [maxAmount, setMaxAmount] = useState<string>('');
 
+  const isDepositNetworkTestnet = selectedDepositNetwork ? isTestnetNetwork(selectedDepositNetwork) : false;
+  const isSettleNetworkTestnet = selectedSettleNetwork ? isTestnetNetwork(selectedSettleNetwork) : false;
+  const hasTestnetNetwork = isDepositNetworkTestnet || isSettleNetworkTestnet;
+
   useEffect(() => {
     if (selectedDepositCoin && selectedSettleCoin && selectedDepositNetwork && selectedSettleNetwork) {
-      const pairKey = `${selectedDepositCoin.coin}-${selectedDepositNetwork}/${selectedSettleCoin.coin}-${selectedSettleNetwork}`;
+      const from = `${selectedDepositCoin.coin}-${selectedDepositNetwork}`;
+      const to = `${selectedSettleCoin.coin}-${selectedSettleNetwork}`;
+      const pairKey = `${from}/${to}`;
       
       const unsubscribe = priceTracker.subscribe((prices) => {
         const price = prices.get(pairKey);
@@ -49,8 +58,8 @@ export function TradeInterface({ userAddress }: { userAddress: string }) {
       });
 
       priceTracker.trackPair(
-        `${selectedDepositCoin.coin}-${selectedDepositNetwork}`,
-        `${selectedSettleCoin.coin}-${selectedSettleNetwork}`,
+        from,
+        to,
         depositAmount ? parseFloat(depositAmount) : undefined
       );
 
@@ -163,6 +172,23 @@ export function TradeInterface({ userAddress }: { userAddress: string }) {
           </button>
         </div>
       </div>
+
+      {/* Testnet Warning */}
+      {(isChainTestnet || hasTestnetNetwork) && (
+        <div className="bg-[#FFD700] border-4 border-black shadow-[6px_6px_0px_0px_#000] p-4 flex items-start gap-3">
+          <AlertTriangle className="w-5 h-5 text-black flex-shrink-0 mt-0.5" />
+          <div className="text-sm font-bold text-black">
+            <div className="mb-1 uppercase font-black">
+              ⚠️ Testnet Mode
+            </div>
+            <div>
+              {isChainTestnet && 'Your wallet is connected to a testnet network. '}
+              {hasTestnetNetwork && 'You are using testnet networks for this swap. '}
+              All transactions use test tokens with no real value.
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Info Banner */}
       <div className="neobrutal-card-cyan p-4 flex items-start gap-3">

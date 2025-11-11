@@ -1,0 +1,21 @@
+# Files to ignore when deploying to Vercel
+# (This file is optional - Vercel uses .gitignore by default)
+
+# Local environment files (already in .gitignore)
+.env*.local
+.env
+
+# Development files
+*.log
+.DS_Store
+
+# IDE files
+.vscode
+.idea
+*.swp
+*.swo
+
+# Test files (if any)
+coverage
+.nyc_output
+

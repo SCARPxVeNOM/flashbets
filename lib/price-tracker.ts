@@ -8,11 +8,16 @@ export interface PriceData {
   timestamp: number;
 }
 
+interface TrackedPair {
+  from: string;
+  to: string;
+}
+
 class PriceTracker {
   private priceCache: Map<string, PriceData> = new Map();
   private updateInterval: NodeJS.Timeout | null = null;
   private subscribers: Set<(prices: Map<string, PriceData>) => void> = new Set();
-  private trackedPairs: Set<string> = new Set();
+  private trackedPairs: Map<string, TrackedPair> = new Map();
 
   subscribe(callback: (prices: Map<string, PriceData>) => void) {
     this.subscribers.add(callback);
@@ -28,8 +33,8 @@ class PriceTracker {
   }
 
   async trackPair(from: string, to: string, amount?: number) {
-    const pairKey = `${from}-${to}`;
-    this.trackedPairs.add(pairKey);
+    const pairKey = `${from}/${to}`;
+    this.trackedPairs.set(pairKey, { from, to });
 
     try {
       const pair = await sideShiftClient.getPair(from, to, amount);
@@ -49,8 +54,7 @@ class PriceTracker {
   }
 
   async updatePrices() {
-    const updatePromises = Array.from(this.trackedPairs).map(async (pairKey) => {
-      const [from, to] = pairKey.split('-');
+    const updatePromises = Array.from(this.trackedPairs.entries()).map(async ([pairKey, { from, to }]) => {
       try {
         const pair = await sideShiftClient.getPair(from, to);
         const priceData: PriceData = {

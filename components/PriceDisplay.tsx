@@ -41,11 +41,14 @@ export function PriceDisplay() {
             onChange={(e) => setSelectedPair(e.target.value)}
             className="w-full neobrutal-select px-4 py-3 text-sm font-bold"
           >
-            {Array.from(prices.keys()).map(pair => (
-              <option key={pair} value={pair}>
-                {pair.replace('-', ' → ').toUpperCase()}
-              </option>
-            ))}
+            {Array.from(prices.keys()).map(pair => {
+              const [from, to] = pair.split('/');
+              return (
+                <option key={pair} value={pair}>
+                  {from.toUpperCase()} → {to.toUpperCase()}
+                </option>
+              );
+            })}
           </select>
 
           {priceData && (

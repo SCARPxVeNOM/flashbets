@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useTradeStore } from '@/store/trade-store';
 import { sideShiftClient, Shift } from '@/lib/sideshift';
+import { isTestnetNetwork } from '@/lib/chain-utils';
 import { Clock, CheckCircle, XCircle, Loader2, ExternalLink } from 'lucide-react';
 
 export function ShiftHistory() {
@@ -94,6 +95,11 @@ export function ShiftHistory() {
                   <span className="font-black text-sm text-white uppercase">
                     {shift.depositCoin} → {shift.settleCoin}
                   </span>
+                  {(isTestnetNetwork(shift.depositNetwork) || isTestnetNetwork(shift.settleNetwork)) && (
+                    <span className="px-2 py-0.5 bg-[#FFD700] border border-black text-black text-xs font-black uppercase">
+                      TESTNET
+                    </span>
+                  )}
                 </div>
                 <div className="text-xs font-bold text-white/70 uppercase">
                   {shift.depositNetwork} → {shift.settleNetwork}

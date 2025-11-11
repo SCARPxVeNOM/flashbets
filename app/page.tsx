@@ -2,18 +2,22 @@
 
 import { useEffect, useState } from 'react';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
-import { useAccount } from 'wagmi';
+import { useAccount, useChainId } from 'wagmi';
 import { TradeInterface } from '@/components/TradeInterface';
 import { PriceDisplay } from '@/components/PriceDisplay';
 import { ShiftHistory } from '@/components/ShiftHistory';
 import { StatsPanel } from '@/components/StatsPanel';
+import { TestnetBanner } from '@/components/TestnetBanner';
 import { sideShiftClient } from '@/lib/sideshift';
 import { useTradeStore } from '@/store/trade-store';
 import { priceTracker } from '@/lib/price-tracker';
+import { isTestnetChain } from '@/lib/chain-utils';
 import { Zap, Globe, Clock, TrendingUp } from 'lucide-react';
 
 export default function Home() {
   const { isConnected, address } = useAccount();
+  const chainId = useChainId();
+  const isTestnet = isTestnetChain(chainId);
   const { setCoins, coins } = useTradeStore();
   const [totalCoins, setTotalCoins] = useState(0);
   const [totalNetworks, setTotalNetworks] = useState(0);
@@ -56,6 +60,11 @@ export default function Home() {
             <div className="text-2xl md:text-3xl font-black text-white">
               <span className="text-[#FFD700]">FLASH</span>TRADES
             </div>
+            {isConnected && isTestnet && (
+              <div className="px-3 py-1 bg-[#FFD700] border-2 border-black text-black text-xs font-black uppercase">
+                TESTNET
+              </div>
+            )}
           </div>
           <div className="flex items-center gap-4">
             <button className="neobrutal-button-cyan px-4 py-2 text-sm flex items-center gap-2">
@@ -122,6 +131,7 @@ export default function Home() {
       {isConnected && (
         <section className="relative z-10 px-4 md:px-8 pb-12">
           <div className="max-w-7xl mx-auto">
+            <TestnetBanner />
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               {/* Trading Interface */}
               <div className="lg:col-span-2">

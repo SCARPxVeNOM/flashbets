@@ -101,6 +101,10 @@ class SideShiftClient {
     amount?: number,
     commissionRate?: string
   ): Promise<Pair> {
+    // Ensure coin-network format is lowercase for API
+    const fromLower = from.toLowerCase();
+    const toLower = to.toLowerCase();
+    
     const params = new URLSearchParams({
       affiliateId: AFFILIATE_ID,
     });
@@ -114,7 +118,7 @@ class SideShiftClient {
     }
 
     const response = await axios.get(
-      `${API_BASE_URL}/pair/${from}/${to}?${params.toString()}`,
+      `${API_BASE_URL}/pair/${fromLower}/${toLower}?${params.toString()}`,
       {
         headers: this.getHeaders(),
       }
