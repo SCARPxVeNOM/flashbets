@@ -2,15 +2,24 @@
 
 import { useEffect, useState } from 'react';
 import { useTradeStore } from '@/store/trade-store';
+import { useDemoStore } from '@/store/demo-store';
 import { sideShiftClient, Shift } from '@/lib/sideshift';
 import { isTestnetNetwork } from '@/lib/chain-utils';
 import { Clock, CheckCircle, XCircle, Loader2, ExternalLink } from 'lucide-react';
 
 export function ShiftHistory() {
   const { shifts, setCurrentShift } = useTradeStore();
+  const { isDemoMode, demoShifts } = useDemoStore();
   const [monitoringShifts, setMonitoringShifts] = useState<Set<string>>(new Set());
+  
+  const displayShifts = isDemoMode ? demoShifts : shifts;
 
   useEffect(() => {
+    if (isDemoMode) {
+      // Demo mode doesn't need polling
+      return;
+    }
+    
     const interval = setInterval(async () => {
       for (const shift of shifts) {
         if (shift.status === 'waiting' || shift.status === 'pending' || shift.status === 'processing') {
@@ -31,7 +40,7 @@ export function ShiftHistory() {
     }, 5000);
 
     return () => clearInterval(interval);
-  }, [shifts]);
+  }, [shifts, isDemoMode]);
 
   const getStatusIcon = (status: string) => {
     switch (status) {
@@ -65,7 +74,7 @@ export function ShiftHistory() {
     }
   };
 
-  if (shifts.length === 0) {
+  if (displayShifts.length === 0) {
     return (
       <div className="neobrutal-card p-6">
         <h3 className="text-xl font-black mb-4 text-white uppercase">Shift History</h3>
@@ -82,7 +91,7 @@ export function ShiftHistory() {
     <div className="neobrutal-card p-6">
       <h3 className="text-xl font-black mb-4 text-white uppercase">Shift History</h3>
       <div className="space-y-3 max-h-96 overflow-y-auto">
-        {shifts.map((shift) => (
+        {displayShifts.map((shift) => (
           <div
             key={shift.id}
             className={`${getStatusColor(shift.status)} p-4 cursor-pointer hover:translate-x-1 hover:translate-y-1 transition-transform`}

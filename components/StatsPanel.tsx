@@ -2,24 +2,32 @@
 
 import { useEffect, useState } from 'react';
 import { useTradeStore } from '@/store/trade-store';
+import { useDemoStore } from '@/store/demo-store';
 import { priceTracker } from '@/lib/price-tracker';
 import { TrendingUp, Coins, Network, Zap } from 'lucide-react';
 
 export function StatsPanel() {
   const { shifts } = useTradeStore();
+  const { isDemoMode, demoShifts, demoPrices } = useDemoStore();
   const [activePairs, setActivePairs] = useState(0);
   const prices = priceTracker.getAllPrices();
+  
+  const displayShifts = isDemoMode ? demoShifts : shifts;
+  const displayPrices = isDemoMode ? demoPrices : prices;
 
   useEffect(() => {
-    const unsubscribe = priceTracker.subscribe((newPrices) => {
-      setActivePairs(newPrices.size);
-    });
+    if (isDemoMode) {
+      setActivePairs(demoPrices.size);
+    } else {
+      const unsubscribe = priceTracker.subscribe((newPrices) => {
+        setActivePairs(newPrices.size);
+      });
+      return unsubscribe;
+    }
+  }, [isDemoMode, demoPrices]);
 
-    return unsubscribe;
-  }, []);
-
-  const settledShifts = shifts.filter(s => s.status === 'settled').length;
-  const totalVolume = shifts
+  const settledShifts = displayShifts.filter(s => s.status === 'settled').length;
+  const totalVolume = displayShifts
     .filter(s => s.status === 'settled' && s.depositAmount)
     .reduce((sum, s) => sum + parseFloat(s.depositAmount || '0'), 0);
 
@@ -32,7 +40,7 @@ export function StatsPanel() {
             <Coins className="w-5 h-5 text-[#FFD700]" />
             <span className="font-bold text-white">Total Swaps</span>
           </div>
-          <span className="text-2xl font-black text-[#FFD700]">{shifts.length}</span>
+          <span className="text-2xl font-black text-[#FFD700]">{displayShifts.length}</span>
         </div>
 
         <div className="flex items-center justify-between p-3 bg-[#0a0a0a] border-2 border-white">

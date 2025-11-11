@@ -2,22 +2,30 @@
 
 import { useState, useEffect } from 'react';
 import { priceTracker, PriceData } from '@/lib/price-tracker';
+import { useDemoStore } from '@/store/demo-store';
 import { TrendingUp, TrendingDown, Activity } from 'lucide-react';
 
 export function PriceDisplay() {
+  const { isDemoMode, demoPrices } = useDemoStore();
   const [prices, setPrices] = useState<Map<string, PriceData>>(new Map());
   const [selectedPair, setSelectedPair] = useState<string | null>(null);
 
   useEffect(() => {
-    const unsubscribe = priceTracker.subscribe((newPrices) => {
-      setPrices(new Map(newPrices));
-      if (!selectedPair && newPrices.size > 0) {
-        setSelectedPair(Array.from(newPrices.keys())[0]);
+    if (isDemoMode) {
+      setPrices(new Map(demoPrices));
+      if (!selectedPair && demoPrices.size > 0) {
+        setSelectedPair(Array.from(demoPrices.keys())[0]);
       }
-    });
-
-    return unsubscribe;
-  }, [selectedPair]);
+    } else {
+      const unsubscribe = priceTracker.subscribe((newPrices) => {
+        setPrices(new Map(newPrices));
+        if (!selectedPair && newPrices.size > 0) {
+          setSelectedPair(Array.from(newPrices.keys())[0]);
+        }
+      });
+      return unsubscribe;
+    }
+  }, [selectedPair, isDemoMode, demoPrices]);
 
   const priceData = selectedPair ? prices.get(selectedPair) : null;
 

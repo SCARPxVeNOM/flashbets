@@ -8,8 +8,10 @@ import { PriceDisplay } from '@/components/PriceDisplay';
 import { ShiftHistory } from '@/components/ShiftHistory';
 import { StatsPanel } from '@/components/StatsPanel';
 import { TestnetBanner } from '@/components/TestnetBanner';
+import { DemoButton } from '@/components/DemoButton';
 import { sideShiftClient } from '@/lib/sideshift';
 import { useTradeStore } from '@/store/trade-store';
+import { useDemoStore } from '@/store/demo-store';
 import { priceTracker } from '@/lib/price-tracker';
 import { isTestnetChain } from '@/lib/chain-utils';
 import { Zap, Globe, Clock, TrendingUp } from 'lucide-react';
@@ -19,6 +21,7 @@ export default function Home() {
   const chainId = useChainId();
   const isTestnet = isTestnetChain(chainId);
   const { setCoins, coins } = useTradeStore();
+  const { isDemoMode } = useDemoStore();
   const [totalCoins, setTotalCoins] = useState(0);
   const [totalNetworks, setTotalNetworks] = useState(0);
 
@@ -118,20 +121,26 @@ export default function Home() {
                 <Zap className="w-5 h-5" />
                 GET STARTED
               </button>
-              <button className="neobrutal-button-cyan px-8 py-4 text-lg flex items-center gap-2">
-                <Globe className="w-5 h-5" />
-                LEARN MORE
-              </button>
+              <DemoButton />
             </div>
           )}
         </div>
       </section>
 
       {/* Main Content */}
-      {isConnected && (
+      {(isConnected || isDemoMode) && (
         <section className="relative z-10 px-4 md:px-8 pb-12">
           <div className="max-w-7xl mx-auto">
             <TestnetBanner />
+            {isDemoMode && (
+              <div className="bg-[#FFD700] border-4 border-black shadow-[8px_8px_0px_0px_#000] p-4 mb-6">
+                <div className="flex items-center justify-between">
+                  <div className="font-black text-black text-lg uppercase">
+                    🎬 DEMO MODE ACTIVE - Watch the swap flow in action!
+                  </div>
+                </div>
+              </div>
+            )}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               {/* Trading Interface */}
               <div className="lg:col-span-2">
