@@ -1,7 +1,6 @@
 import axios from 'axios';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_SIDESHIFT_API_URL || 'https://sideshift.ai/api/v2';
-const SIDESHIFT_SECRET = process.env.NEXT_PUBLIC_SIDESHIFT_SECRET || '';
 const AFFILIATE_ID = process.env.NEXT_PUBLIC_AFFILIATE_ID || '';
 
 export interface Coin {
@@ -74,21 +73,8 @@ export interface Shift {
 }
 
 class SideShiftClient {
-  private getHeaders(userIp?: string) {
-    const headers: Record<string, string> = {
-      'Content-Type': 'application/json',
-    };
-
-    if (SIDESHIFT_SECRET) {
-      headers['x-sideshift-secret'] = SIDESHIFT_SECRET;
-    }
-
-    if (userIp) {
-      headers['x-user-ip'] = userIp;
-    }
-
-    return headers;
-  }
+  // Public methods that don't require secret - can be called from frontend
+  // Private methods that require secret are now handled by backend API routes
 
   async getCoins(): Promise<Coin[]> {
     const response = await axios.get(`${API_BASE_URL}/coins`);
@@ -117,11 +103,9 @@ class SideShiftClient {
       params.append('commissionRate', commissionRate);
     }
 
+    // Public endpoint - no secret needed
     const response = await axios.get(
-      `${API_BASE_URL}/pair/${fromLower}/${toLower}?${params.toString()}`,
-      {
-        headers: this.getHeaders(),
-      }
+      `${API_BASE_URL}/pair/${fromLower}/${toLower}?${params.toString()}`
     );
     return response.data;
   }
@@ -135,27 +119,15 @@ class SideShiftClient {
     settleAmount?: string,
     userIp?: string
   ): Promise<Quote> {
-    const body: any = {
+    // Call backend API route instead of SideShift directly
+    const response = await axios.post('/api/quotes', {
       depositCoin,
       depositNetwork,
       settleCoin,
       settleNetwork,
-      affiliateId: AFFILIATE_ID,
-    };
-
-    if (depositAmount) {
-      body.depositAmount = depositAmount;
-    } else if (settleAmount) {
-      body.settleAmount = settleAmount;
-    }
-
-    const response = await axios.post(
-      `${API_BASE_URL}/quotes`,
-      body,
-      {
-        headers: this.getHeaders(userIp),
-      }
-    );
+      depositAmount,
+      settleAmount,
+    });
     return response.data;
   }
 
@@ -167,31 +139,14 @@ class SideShiftClient {
     refundMemo?: string,
     userIp?: string
   ): Promise<Shift> {
-    const body: any = {
+    // Call backend API route instead of SideShift directly
+    const response = await axios.post('/api/shifts/fixed', {
       quoteId,
       settleAddress,
-      affiliateId: AFFILIATE_ID,
-    };
-
-    if (refundAddress) {
-      body.refundAddress = refundAddress;
-    }
-
-    if (settleMemo) {
-      body.settleMemo = settleMemo;
-    }
-
-    if (refundMemo) {
-      body.refundMemo = refundMemo;
-    }
-
-    const response = await axios.post(
-      `${API_BASE_URL}/shifts/fixed`,
-      body,
-      {
-        headers: this.getHeaders(userIp),
-      }
-    );
+      refundAddress,
+      settleMemo,
+      refundMemo,
+    });
     return response.data;
   }
 
@@ -207,52 +162,29 @@ class SideShiftClient {
     commissionRate?: string,
     userIp?: string
   ): Promise<Shift> {
-    const body: any = {
+    // Call backend API route instead of SideShift directly
+    const response = await axios.post('/api/shifts/variable', {
       depositCoin,
       depositNetwork,
       settleCoin,
       settleNetwork,
       settleAddress,
-      affiliateId: AFFILIATE_ID,
-    };
-
-    if (refundAddress) {
-      body.refundAddress = refundAddress;
-    }
-
-    if (settleMemo) {
-      body.settleMemo = settleMemo;
-    }
-
-    if (refundMemo) {
-      body.refundMemo = refundMemo;
-    }
-
-    if (commissionRate) {
-      body.commissionRate = commissionRate;
-    }
-
-    const response = await axios.post(
-      `${API_BASE_URL}/shifts/variable`,
-      body,
-      {
-        headers: this.getHeaders(userIp),
-      }
-    );
+      refundAddress,
+      settleMemo,
+      refundMemo,
+      commissionRate,
+    });
     return response.data;
   }
 
   async getShift(shiftId: string): Promise<Shift> {
-    const response = await axios.get(
-      `${API_BASE_URL}/shifts/${shiftId}`,
-      {
-        headers: this.getHeaders(),
-      }
-    );
+    // Call backend API route instead of SideShift directly
+    const response = await axios.get(`/api/shifts/${shiftId}`);
     return response.data;
   }
 
   async checkPermissions(userIp?: string): Promise<{ createShift: boolean }> {
+    // Public endpoint - no secret needed
     const headers: Record<string, string> = {};
     if (userIp) {
       headers['x-user-ip'] = userIp;
