@@ -14,7 +14,8 @@ import { useTradeStore } from '@/store/trade-store';
 import { useDemoStore } from '@/store/demo-store';
 import { priceTracker } from '@/lib/price-tracker';
 import { isTestnetChain } from '@/lib/chain-utils';
-import { Zap, Globe, Clock, TrendingUp } from 'lucide-react';
+import { Zap, Globe, Clock, TrendingUp, Trophy } from 'lucide-react';
+import Link from 'next/link';
 
 export default function Home() {
   const { isConnected, address } = useAccount();
@@ -70,6 +71,10 @@ export default function Home() {
             )}
           </div>
           <div className="flex items-center gap-4">
+            <Link href="/betting" className="neobrutal-button-cyan px-4 py-2 text-sm flex items-center gap-2">
+              <Trophy className="w-4 h-4" />
+              BETTING
+            </Link>
             <button className="neobrutal-button-cyan px-4 py-2 text-sm flex items-center gap-2">
               <Clock className="w-4 h-4" />
               HISTORY
